@@ -31,10 +31,10 @@
             socket.on("user coordinates from admin", data => {
                 // console.log(data.coordinates)
                 var randowmRoute = `route_${Math.floor(Math.random() * 1000000)}`
-                map.addSource('route', {
+                map.addSource(`${randowmRoute}`, {
                     'type': 'geojson',
                     'data': {
-                        'type': 'FeatureCollection',
+                        'type': 'Feature',
                         'properties': {},
                         'geometry': {
                             'type': 'LineString',
@@ -44,9 +44,9 @@
                 });
 
                 map.addLayer({
-                    'id': randowmRoute,
+                    'id': `${randowmRoute}`,
                     'type': 'line',
-                    'source': 'route',
+                    'source': `${randowmRoute}`,
                     'layout': {
                         'line-join': 'round',
                         'line-cap': 'round'
