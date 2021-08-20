@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Page</title>
+</head>
+
+<body>
+    <section class="main-body">
+        <center>
+            <h2>Phone Tracker</h2>
+            <button id="start">Start Tracking</button>
+            <button id="stop">Stop Tracking</button>
+        </center>
+    </section>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const start = document.querySelector("#start");
+        const stop = document.querySelector("#stop");
+        const coordinates = []
+
+        start.addEventListener("click", (e) => {
+
+            navigator.geolocation.watchPosition(
+                data => {
+                    var user_id = `user_${Math.floor(Math.random() * 1000000)}`
+
+                    coordinates.push([data.coords.longitude, data.coords.latitude])
+                    console.log(coordinates)
+
+                    socket.emit('user coordinates', { user_id: user_id, coordinates: coordinates })
+                },
+                err => console.log("ERR: ", err),
+                { enableHighAccuracy: true }
+            )
+        })
+    </script>
+</body>
+
+</html>

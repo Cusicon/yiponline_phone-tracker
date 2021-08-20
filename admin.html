@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
+
+</head>
+
+<body>
+    <div id='map' style='width: 100%; height: 100vh;'></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiY3VzaWNvbiIsImEiOiJja3NqYzE3cm4yYzVtMm9vZGEzMjFrYnJtIn0.Mug09ezqZa4H9iYtZwoyFA';
+        const socket = io();
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [13.404954, 52.520007],
+            zoom: 15
+        });
+
+        map.on('load', () => {
+            socket.on("user coordinates from admin", data => {
+                // console.log(data.coordinates)
+                var randowmRoute = `route_${Math.floor(Math.random() * 1000000)}`
+                map.addSource('route', {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'FeatureCollection',
+                        'properties': {},
+                        'geometry': {
+                            'type': 'LineString',
+                            'coordinates': data.coordinates
+                        }
+                    }
+                });
+
+                map.addLayer({
+                    'id': randowmRoute,
+                    'type': 'line',
+                    'source': 'route',
+                    'layout': {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    'paint': {
+                        'line-color': '#E50000',
+                        'line-width': 5
+                    }
+                });
+            })
+        });
+    </script>
+</body>
+
+</html>
